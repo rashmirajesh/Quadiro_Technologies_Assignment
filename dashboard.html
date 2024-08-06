@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Car Dashboard</h1>
+    <p>Total Cars: {{ .totalCars }}</p>
+    <ul>
+        {{ range .cars }}
+            <li>{{ .Name }} ({{ .ManufacturingYear }}) - ${{ .Price }}</li>
+        {{ end }}
+    </ul>
+    <form id="car-form">
+        <input type="text" id="name" placeholder="Car Name">
+        <input type="number" id="year" placeholder="Manufacturing Year">
+        <input type="number" id="price" placeholder="Price">
+        <button type="submit">Add Car</button>
+    </form>
+    <script>
+        document.getElementById('car-form').onsubmit = function(e) {
+            e.preventDefault();
+            var name = document.getElementById('name').value;
+            var year = document.getElementById('year').value;
+            var price = document.getElementById('price').value;
+
+            fetch('/admin/cars', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: name, manufacturing_year: year, price: price })
+            }).then(response => response.json()).then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    location.reload();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
